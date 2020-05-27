@@ -1,0 +1,156 @@
+#include <stdio.h>
+#include <string.h>
+#include <cs50.h>
+#include <ctype.h>
+#include <math.h>
+#include <stdlib.h>
+
+int main(int arg, string key[])
+{
+    int k = 0;
+    int code = 0; //position in Ascii
+    int pass[26]; //copies key to array
+
+    //Checks for lack of command line arguments or too many
+    if (key[1] < 0 || key[2] != 0 || arg < 1)
+    {
+        //Print Error Message
+        printf("Usage: ./substitution key\n");
+        return 1;
+    }
+
+    else
+    {
+
+        //Obtains length of key
+        int klen = strlen(key[1]);
+        int kid = 0;
+
+        //Checks if there are non digit values
+        for (int i = 0; i < klen; i++)
+        {
+            if (isalpha(key[1][i]) == 0)
+            {
+                i = klen + 1;
+                kid = i;
+            }
+            
+            //Checks for repeated keys
+            for (int j = 0; j < i; j++)
+            {
+                if (key[1][i] == key[1][j])
+                {
+                    i = klen + 2;
+                    kid = i;
+                }
+            }
+        }
+
+        if (kid == klen + 1)
+        {
+            //Print Error Message
+            printf("Usage: ./substitution key\n");
+            printf("Key must only contain alphabetic characters.\n");
+            return 1;
+        }
+
+        else if (kid == klen + 2)
+        {
+            //Print Error Message
+            printf("Usage: ./substitution key\n");
+            printf("Key must not contain repeated characters.\n");
+            return 1;
+        }
+
+        else if (klen > 26 || klen < 26)
+        {
+            //Print Error Message
+            printf("Usage: ./substitution key\n");
+            printf("Key must contain 26 characters.\n");
+
+            return 1;
+        }
+
+        else
+        {
+            //Converts key to int
+            k = atoi(key[1]);
+
+
+
+            for (int l = 0; l < 26; l++)
+            {
+                pass[l] = key[1][l];
+
+            }
+
+            //Prompts user for text
+            string text = get_string("plaintext: ");
+            long length = strlen(text);
+            char crypt[length];
+            int position;//position of text
+
+            //Ciphers Text
+            printf("ciphertext: ");
+            for (int i = 0; i < length; i++)
+            {
+                crypt[i] = text[i];
+                
+                //Checks if characters are alphabetical 
+                if (isalpha(text[i]) != 0)
+                {
+                    //Checks if character is upper case
+                    if (isupper(text[i]) != 0)
+                    {
+                        //Coverts to position from 0-25 in alphabet 
+                        code = 65;
+                        position = crypt[i] - code;
+
+                        //Checks if corresponding key is uppercase then encrypts character
+                        if (isupper(pass[position]) != 0)
+                        {
+                            crypt[i] = pass[position];
+                            
+                        }
+
+                        else
+                        {
+                            code = 32;
+                            crypt[i] = pass[position] - code;
+                         
+                        }
+
+                    }
+
+                    else
+                    {
+                        code = 97;
+                        position = crypt[i] - code;
+
+                        if (islower(pass[position]) != 0)
+                        {
+                            crypt[i] = pass[position] ;
+                            
+                        }
+
+                        else
+                        {
+                            code = 32;
+                            crypt[i] = pass[position] + code;
+                            
+                        }
+
+                    }
+                   
+                }
+                //Prints out encypted message
+                printf("%c", crypt[i]);
+            }
+            printf("\n");
+
+        }
+
+    }
+
+
+}
